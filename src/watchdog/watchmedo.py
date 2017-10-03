@@ -505,6 +505,9 @@ try to interpret them.
      default=10.0,
      help='when stopping, kill the subprocess after the specified timeout '
           '(default 10)')
+@arg('--debug-force-polling',
+     default=False,
+     help='[debug] forces polling')
 @expects_obj
 def auto_restart(args):
     """
@@ -514,10 +517,15 @@ def auto_restart(args):
     :param args:
         Command line argument options.
     """
-    from watchdog.observers import Observer
+    
     from watchdog.tricks import AutoRestartTrick
     import signal
     import re
+    
+    if args.debug_force_polling:
+        from watchdog.observers.polling import PollingObserver as Observer
+    else:
+        from watchdog.observers import Observer
 
     if not args.directories:
         args.directories = ['.']
